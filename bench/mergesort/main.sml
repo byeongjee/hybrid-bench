@@ -30,4 +30,13 @@ val _ = print
 val _ = print
   ("result " ^ Util.summarizeArraySlice 8 Int32.toString result ^ "\n")
 
+fun checkSorted seq =
+  Seq.reduce (fn (x, y) => x andalso y) true
+    (Seq.tabulate (fn i => Seq.nth seq i <= Seq.nth seq (i + 1))
+       (Seq.length seq - 1)) 
+
+val _ =
+  if checkSorted result then print "correctly sorted!\n"
+  else print "bug: not sorted correctly!"
+
 val _ = FutharkSort.Context.free ctx
