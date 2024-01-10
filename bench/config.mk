@@ -10,7 +10,8 @@
 FUTHARK_BACKEND ?= cuda
 
 # Path to MPL binary.
-MPL ?= /home/ec2-user/proj/mpl/hybrid-sched/build/bin/mpl
+MPL ?= /home/ubuntu/mpl/build/bin/mpl
+# /home/ec2-user/proj/mpl/hybrid-sched/build/bin/mpl
 
 MLTONFLAGS = \
   -default-ann 'allowFFI true' \
@@ -21,8 +22,8 @@ MLTONFLAGS = \
 	-disable-pass splitTypes2
 
 OPENBLAS_MLTONFLAGS = \
-	-cc-opt '-I/home/ec2-user/openblas-v0.3.23/installed/include/' \
-	-link-opt '-L/home/ec2-user/openblas-v0.3.23/installed/lib/ -lopenblas'
+	-cc-opt '-I/opt/OpenBLAS/include/' \
+	-link-opt '-L/opt/OpenBLAS/lib/ -lopenblas'
 
 ifeq ($(FUTHARK_BACKEND), c)
 MLTONFLAGS += \
@@ -30,8 +31,8 @@ MLTONFLAGS += \
 	-link-opt '-rdynamic'
 else ifeq ($(FUTHARK_BACKEND), cuda)
 MLTONFLAGS += \
-	-cc-opt '-I/opt/nvidia/cuda/include/ -I../common/ -D_GNU_SOURCE' \
-	-link-opt '-rdynamic -L/opt/nvidia/cuda/lib64/ -lcuda -lnvrtc -lcublas -lcudart -lstdc++'
+	-cc-opt '-I/usr/local/cuda/include/ -I../common/ -D_GNU_SOURCE' \
+	-link-opt '-rdynamic -L/usr/local/cuda/lib64/ -lcuda -lnvrtc -lcublas -lcudart -lstdc++'
 else ifeq ($(FUTHARK_BACKEND), hip)
 MLTONFLAGS += \
 	-cc-opt '-I../common/ -D_GNU_SOURCE' \
