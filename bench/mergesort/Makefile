@@ -7,7 +7,7 @@ main.mpl.bin: phony $(FDIR)/sort.sml
 
 $(FDIR)/sort.sml: $(FDIR)/sort.fut $(FDIR)/lib
 	futhark $(FUTHARK_BACKEND) --library $(FDIR)/sort.fut
-	smlfut -o $(FDIR) --poly-arrays  --structure=FutharkSort --signature=FUTHARK_SORT $(FDIR)/sort.json
+	smlfut -o $(FDIR) --poly-arrays  --structure=FutharkSort --signature=FUTHARK_SORT$(FDIR)/sort.json
 
 $(FDIR)/lib:
 	(cd $(FDIR); futhark pkg sync)
