@@ -3,4 +3,5 @@ spinlock.mlb
 TreeSeq.sml
 Device.sml
 CtxSet.sml
+GpuData.sml
 HybridBasis.sml
