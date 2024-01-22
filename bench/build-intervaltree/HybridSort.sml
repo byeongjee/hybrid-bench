@@ -27,7 +27,7 @@ struct
     Int32.compare (Seq.nth vals (Int32.toInt i), Seq.nth vals (Int32.toInt j))
 
   (* sort idxs where the comparison 'i < j' is defined by vals[i] < vals[j] *)
-  fun sort ctx (vals: Int32.int Seq.t) (idxs: Int32.int Seq.t) =
+  fun sort ctxSet (vals: Int32.int Seq.t) (idxs: Int32.int Seq.t) =
     if Seq.length idxs <= quickThresh then
       Quicksort.sort (cmpWith vals) idxs
     else
@@ -35,18 +35,21 @@ struct
         val half = Real.ceil (split * Real.fromInt (Seq.length idxs))
         val left = Seq.take idxs half
         val right = Seq.drop idxs half
-        val (left', right') = ForkJoin.par (fn _ => sort ctx vals left, fn _ =>
-          sortChoose ctx vals right)
+        val (left', right') = ForkJoin.par (fn _ => sort ctxSet vals left, fn _ =>
+          sortChoose ctxSet vals right)
       in
         Merge.merge (cmpWith vals) (left', right')
       end
 
-  and sortChoose ctx vals idxs =
+  and sortChoose ctxSet vals idxs =
     if Seq.length idxs >= gpuMinThresh then
       ForkJoin.choice
         { prefer_cpu = fn _ => sort ctx vals idxs
         (* NOTE: vals needs to be initialized on GPU beforehand... *)
-        , prefer_gpu = fn _ => FutSort.sort ctx (*vals*) idxs
+        , prefer_gpu = fn device => 
+          let ctx = CtxSet.choose ctxSet device in
+            FutSort.sort ctx (*vals*) idxs
+          end
         }
     else
       sort ctx vals idxs
