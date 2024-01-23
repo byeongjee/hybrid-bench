@@ -1,7 +1,7 @@
 structure HybridSort =
 struct
   structure CtxSet = CtxSetFn (structure F = FutharkSort)
-  val devices = String.fields (fn c => c = #",") (CLA.parseString "devices" "")
+  val devices = String.fields (fn c => c = #",") (CommandLineArgs.parseString "devices" "")
   structure ForkJoin = ForkJoinMultiGpu (val devices = devices)
 
   val gpu_sort_name = CommandLineArgs.parseString "gpu-sort" "radix"
