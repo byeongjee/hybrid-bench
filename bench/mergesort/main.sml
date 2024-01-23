@@ -6,12 +6,12 @@ val n = CLA.parseInt "n" (100 * 1000 * 1000)
 val impl = CLA.parseString "impl" "hybrid"
 val _ = print ("n " ^ Int.toString n ^ "\n")
 val _ = print ("impl " ^ impl ^ "\n")
-val devices = String.split ((CLA.parseString "devices" ""), #",")
-print ("devices " ^ String.concatWith ", " devices ^ "\n")
+val devices = String.fields (fn c => c = #",") (CLA.parseString "devices" "")
+val _ = print ("devices " ^ String.concatWith ", " devices ^ "\n")
 
 val () = print "Initialising Futhark context map... "
 
-val ctxSet = CtxSet.fromList ["#0"] (* TODO: Read it from configuration *)
+val ctxSet = CtxSet.fromList devices (* TODO: Read it from configuration *)
 val (_, ctx) = Seq.first ctxSet (* use the first gpu for gpu benchmarks *)
 
 val () = print "Done!\n"
